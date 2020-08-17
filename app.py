@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
+chosenclass ='107i pm'
+                  
 app = Flask(__name__)
 app.secret_key = "Secret Key"
 
@@ -36,7 +38,7 @@ class Data(db.Model):
 @app.route('/')
 def Index():
     #all_data = Data.query.all()
-    all_data = Data.query.filter_by(classroom='107i am').all()
+    all_data = Data.query.filter_by(classroom=chosenclass).all()
     #records = session.query(Customer).filter_by(first_name='Carl').all()
     return render_template("index.html", students = all_data)
 
