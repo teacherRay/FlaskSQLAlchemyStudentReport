@@ -27,7 +27,7 @@
 
                 <table class="table table-hover table-dark">
                     <tr>
-                        <th>ID</th>
+                        <!-- <th>ID</th> -->
                         <th>Student ID</th>
                         <th>Name</th>
                         <th>Classroom</th>
@@ -39,7 +39,7 @@
 
                    {% for row in students %}
                     <tr>
-                        <td>{{row.id}}</td>
+                        <!-- <td>{{row.id}}</td> -->
                         <td>{{row.studentid}}</td>
                         <td>{{row.name}}</td>
                         <td>{{row.classroom}} {{row.classtime}}</td>
@@ -151,10 +151,10 @@
                 <input type="text" class="form-control" name="classtime" required="1">
              </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label>PA Comment:</label>
-                  <input type="text" class="form-control" name="pacomment" required="1">
-               </div>
+                  <input type="text" class="form-control" name="pacomment" required="0">
+               </div> -->
 
                <div class="form-group">
                   <button class="btn btn-primary" type="submit">Add Student</button>

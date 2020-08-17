@@ -21,7 +21,7 @@ class Data(db.Model):
     pbcomment = db.Column(db.String(255))
     pccomment = db.Column(db.String(255))
 
-    def __init__(self, name, studentid, classroom, classtime, pacomment, pbcomment, pccomment):
+    def __init__(self, name, studentid, classroom, classtime):
         self.studentid = studentid
         self.name = name        
         self.classroom = classroom
@@ -35,7 +35,9 @@ class Data(db.Model):
 #query on all our student data
 @app.route('/')
 def Index():
-    all_data = Data.query.all()
+    #all_data = Data.query.all()
+    all_data = Data.query.filter_by(classroom='107i am').all()
+    #records = session.query(Customer).filter_by(first_name='Carl').all()
     return render_template("index.html", students = all_data)
 
 #this route is for inserting data to mysql database via html forms
@@ -51,7 +53,7 @@ def insert():
         pbcomment = request.form['pbcomment']
         pccomment = request.form['pccomment']
 
-        my_data = Data(name, studentid, classroom, classtime, pacomment, pbcomment, pbcomment)
+        my_data = Data(name, studentid, classroom, classtime, pacomment, pbcomment, pccomment)
         db.session.add(my_data)
         db.session.commit()
 
