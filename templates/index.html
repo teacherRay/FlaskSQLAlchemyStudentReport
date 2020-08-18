@@ -10,7 +10,19 @@
             <div class="jumbotron p-3">
 
                 <h2>Manage <b>Students </b>  <button type="button"  class="btn btn-success float-right"
+                  
                 data-toggle="modal" data-target="#mymodal">Add New Students</button> </h2>
+                <label for="classrooms">Choose a classroom:</label>
+                <form action="." method="post">
+                  <select name="chosenclass" id="chosenclass">
+                     <option value="107i am">107i am</option>
+                     <option value="305e am">305e am</option>
+                     <option value="107i pm">107i pm</option>
+                     <option value="201i am">201i am</option>
+                   </select><br><br>
+                  <input type="submit" value="Submit">
+                </form>
+               
 
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -53,7 +65,7 @@
                         </td>
                     </tr>
 
-                  <!-- Modal Edit sTUDENT-->
+                  <!-- Modal Edit Student-->
 <div id="modaledit{{row.id}}" class="modal fade" role="dialog">
    <div class="modal-dialog">
 

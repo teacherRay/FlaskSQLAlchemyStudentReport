@@ -35,11 +35,9 @@ class Data(db.Model):
 
 #This is the index route where we are going to
 #query on all our student data
-@app.route('/')
+@app.route('/' , methods = ["GET", "POST"])
 def Index():
-    #all_data = Data.query.all()
     all_data = Data.query.filter_by(classroom=chosenclass).all()
-    #records = session.query(Customer).filter_by(first_name='Carl').all()
     return render_template("index.html", students = all_data)
 
 #this route is for inserting data to mysql database via html forms
