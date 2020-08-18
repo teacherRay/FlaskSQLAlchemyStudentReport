@@ -37,8 +37,10 @@ class Data(db.Model):
 #query on all our student data
 @app.route('/' , methods = ["GET", "POST"])
 def Index():
-    all_data = Data.query.filter_by(classroom=chosenclass).all()
-    return render_template("index.html", students = all_data)
+        chosenclass = request.form.get('chosenclass')
+        all_data = Data.query.filter_by(classroom=chosenclass).all()
+        return render_template("index.html", students = all_data)
+   
 
 #this route is for inserting data to mysql database via html forms
 @app.route('/insert', methods = ['POST'])
