@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session, g
 from flask_sqlalchemy import SQLAlchemy
 
-chosenclass ='107i pm'
+chosenclass =''
                   
 app = Flask(__name__)
 app.secret_key = "Secret Key"
@@ -38,9 +38,13 @@ class Data(db.Model):
 @app.route('/' , methods = ["GET", "POST"])
 def Index():
         chosenclass = request.form.get('chosenclass')
-        all_data = Data.query.filter_by(classroom=chosenclass).all()
+        session.permanent = True
+        session["chosenclass"] = chosenclass
+        all_data = Data.query.filter_by(classroom=session["chosenclass"]).all()
         return render_template("index.html", students = all_data)
    
+
+
 
 #this route is for inserting data to mysql database via html forms
 @app.route('/insert', methods = ['POST'])
@@ -60,12 +64,14 @@ def insert():
         db.session.commit()
 
         flash("Student Inserted Successfully")
+        # chosenclass = request.values.get('chosenclass')
+        all_data = Data.query.filter_by(classroom=session["chosenclass"]).all()
         return redirect(url_for('Index'))
 
 
 #this is our update route where we are going to update our students
-@app.route('/update', methods = ['GET', 'POST'])
-def update():
+@app.route('/updatepa', methods = ['GET', 'POST'])
+def updatepa():
 
     if request.method == 'POST':
         my_data = Data.query.get(request.form.get('id'))
@@ -74,24 +80,48 @@ def update():
         my_data.classroom = request.form['classroom']
         my_data.classtime = request.form['classtime']
         my_data.pacomment = request.form['pacomment']
-        my_data.pbcomment = request.form['pbcomment']
-        my_data.pccomment = request.form['pccomment']
         
+        db.session.commit()
+        flash("Student Updated Successfully")
+        #chosenclass=session("chosenclass")
 
+        return redirect(url_for('Index'))
+
+#this is our update route where we are going to update our students
+@app.route('/updatepb', methods = ['GET', 'POST'])
+def updatepb():
+
+    if request.method == 'POST':
+        my_data = Data.query.get(request.form.get('id'))
+        my_data.name = request.form['name']
+        my_data.studentid = request.form['studentid']
+        my_data.classroom = request.form['classroom']
+        my_data.classtime = request.form['classtime']
+        my_data.pbcomment = request.form['pbcomment']
+       
         db.session.commit()
         flash("Student Updated Successfully")
 
         return redirect(url_for('Index'))
 
-#This route is for deleting our students
-@app.route('/delete/<id>/', methods = ['GET', 'POST'])
-def delete(id):
-    my_data = Data.query.get(id)
-    db.session.delete(my_data)
-    db.session.commit()
-    flash("Student Deleted Successfully")
+#this is our update route where we are going to update our students
+@app.route('/updatepc', methods = ['GET', 'POST'])
+def updatepc():
 
-    return redirect(url_for('Index'))
+    if request.method == 'POST':
+        my_data = Data.query.get(request.form.get('id'))
+        my_data.name = request.form['name']
+        my_data.studentid = request.form['studentid']
+        my_data.classroom = request.form['classroom']
+        my_data.classtime = request.form['classtime']
+        my_data.pccomment = request.form['pccomment']
+       
+        db.session.commit()
+        flash("Student Updated Successfully")
+
+        return redirect(url_for('Index'))
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

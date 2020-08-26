@@ -1,25 +1,7 @@
-
-<option value=" has performed well online."> has performed well online.</option>
-<option value=" has performed well but needs to improve attendance."> has performed well but needs to improve attendance.</option>
-<option value=" has attended all classes; however could put in more effort into their work."> has attended all classes; however could put in more effort into their work.</option>
-<option value=" regulary turns in incomplete work."> regulary turns in incomplete work.</option>
-<option value=" completes the required work, but often incorrectly."> completes the required work, but often incorrectly.</option>
-<option value=" completes the required work, but often misses deadlines."> completes the required work, but often misses deadlines.</option>
-<option value=" is a polite and respectful student."> is a polite and respectful student.</option>
-<option value=" is performing adequately, but needs to ask the teacher more questions."> is performing adequately, but needs to ask the teacher more questions.</option>
-<option value=" rarely attends classes and rarely completes the required lessons."> rarely attends classes and rarely completes the required lessons.</option>
-<option value=" never attends classes and never completes any of the required tasks."> never attends classes and never completes any of the required tasks.</option>
-<option value=" joined online classes late but has made a lot of progress."> joined online classes late but has made a lot of progress.</option>
-<option value=" has made a lot of progress."> has made a lot of progress.</option>
-<option value=" has made little progress."> has made little progress.</option>
-<option value=" has struggled to complete the required amount of work."> has struggled to complete the required amount of work.</option>
-
-
-
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session, g
 from flask_sqlalchemy import SQLAlchemy
 
-# chosenclass ='107i pm'
+chosenclass =''
                   
 app = Flask(__name__)
 app.secret_key = "Secret Key"
@@ -56,9 +38,20 @@ class Data(db.Model):
 @app.route('/' , methods = ["GET", "POST"])
 def Index():
         chosenclass = request.form.get('chosenclass')
-        all_data = Data.query.filter_by(classroom=chosenclass).all()
+        session.permanent = True
+        session["chosenclass"] = chosenclass
+        all_data = Data.query.filter_by(classroom=session["chosenclass"]).all()
         return render_template("index.html", students = all_data)
    
+@app.route('/Index2' , methods = ["GET", "POST"])
+def Index2():
+        #chosenclass = request.form.get('chosenclass')
+        session.permanent = True
+        session["chosenclass"] = chosenclass
+        all_data = Data.query.filter_by(classroom=session["chosenclass"]).all()
+        return render_template("index.html", students = all_data)
+
+
 
 #this route is for inserting data to mysql database via html forms
 @app.route('/insert', methods = ['POST'])
@@ -78,6 +71,8 @@ def insert():
         db.session.commit()
 
         flash("Student Inserted Successfully")
+        # chosenclass = request.values.get('chosenclass')
+        all_data = Data.query.filter_by(classroom=session["chosenclass"]).all()
         return redirect(url_for('Index'))
 
 
@@ -95,8 +90,9 @@ def updatepa():
         
         db.session.commit()
         flash("Student Updated Successfully")
+        #chosenclass=session("chosenclass")
 
-        return redirect(url_for('Index'))
+        return redirect(url_for('Index2'))
 
 #this is our update route where we are going to update our students
 @app.route('/updatepb', methods = ['GET', 'POST'])
