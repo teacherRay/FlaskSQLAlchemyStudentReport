@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, g
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
-chosenclass =''
+globalClassroom =None
+selectedFormOption =''
+
                   
 app = Flask(__name__)
 app.secret_key = "Secret Key"
@@ -37,13 +39,18 @@ class Data(db.Model):
 #query on all our student data
 @app.route('/' , methods = ["GET", "POST"])
 def Index():
-        chosenclass = request.form.get('chosenclass')
-        session.permanent = True
-        session["chosenclass"] = chosenclass
-        all_data = Data.query.filter_by(classroom=session["chosenclass"]).all()
+    global globalClassroom
+    print('Initial globalClassroom =', globalClassroom)
+    if (globalClassroom == None):
+        globalClassroom = request.form.get('selectedFormOption')
+        print ('index route: globalClassroom = ', globalClassroom)
+        all_data = Data.query.filter_by(classroom = globalClassroom ).all()
         return render_template("index.html", students = all_data)
-   
-
+    else:    
+        print ('index route: globalClassroom = ', globalClassroom)
+        all_data = Data.query.filter_by(classroom = globalClassroom).all()
+        return render_template("index.html", students = all_data)
+        
 
 
 #this route is for inserting data to mysql database via html forms
@@ -64,8 +71,8 @@ def insert():
         db.session.commit()
 
         flash("Student Inserted Successfully")
-        # chosenclass = request.values.get('chosenclass')
-        all_data = Data.query.filter_by(classroom=session["chosenclass"]).all()
+        # chosenclass = request.values.get('chosenclass')globalClassroom
+        all_data = Data.query.filter_by(classroom=globalClassroom).all()
         return redirect(url_for('Index'))
 
 
@@ -77,14 +84,14 @@ def updatepa():
         my_data = Data.query.get(request.form.get('id'))
         my_data.name = request.form['name']
         my_data.studentid = request.form['studentid']
-        my_data.classroom = request.form['classroom']
+        my_data.classroom = globalClassroom
         my_data.classtime = request.form['classtime']
         my_data.pacomment = request.form['pacomment']
-        
+        print ('updatepa route pre commit: globalClassroom = ', globalClassroom)
         db.session.commit()
+        print ('updatepa route post commit: globalClassroom = ', globalClassroom)
         flash("Student Updated Successfully")
-        #chosenclass=session("chosenclass")
-
+      
         return redirect(url_for('Index'))
 
 #this is our update route where we are going to update our students
